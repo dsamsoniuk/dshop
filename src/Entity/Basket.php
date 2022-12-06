@@ -15,51 +15,25 @@ class Basket
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class)]
-    private Collection $product;
-
     #[ORM\ManyToOne(inversedBy: 'baskets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column]
-    private ?int $quantity = null;
 
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\OneToMany(mappedBy: 'basket', targetEntity: BasketDetails::class, cascade:['persist'])]
+    private Collection $basketDetails;
+
     public function __construct()
     {
-        $this->product = new ArrayCollection();
+        $this->basketDetails = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProduct(): Collection
-    {
-        return $this->product;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->product->contains($product)) {
-            $this->product->add($product);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        $this->product->removeElement($product);
-
-        return $this;
     }
 
     public function getUser(): ?User
@@ -74,18 +48,6 @@ class Basket
         return $this;
     }
 
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): self
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
     public function isActive(): ?bool
     {
         return $this->active;
@@ -96,5 +58,51 @@ class Basket
         $this->active = $active;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, BasketDetails>
+     */
+    public function getBasketDetails(): Collection
+    {
+        return $this->basketDetails;
+    }
+
+    public function addBasketDetails(BasketDetails $basketDetail): self
+    {
+        if (!$this->basketDetails->contains($basketDetail)) {
+
+            $this->basketDetails->add($basketDetail);
+            $basketDetail->setBasket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBasketDetail(BasketDetails $basketDetail): self
+    {
+        if ($this->basketDetails->removeElement($basketDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($basketDetail->getBasket() === $this) {
+                $basketDetail->setBasket(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addProduct(Product $product, int $qty = 0){
+        /** @var BasketDetails $bd */
+        foreach ($this->basketDetails as $bd) {
+            if ($bd->getProduct() == $product) {
+                $bd->setQuantity($bd->getQuantity() + $qty);
+                return $this;
+            }
+        }
+
+        $bd = new BasketDetails();
+        $bd->setProduct($product);
+        $bd->setQuantity($qty);
+        $this->addBasketDetails($bd);
     }
 }

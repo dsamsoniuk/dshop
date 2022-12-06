@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}Hello OrderController!{% endblock %}
 
 {% block body %}
 <style>
@@ -11,14 +11,12 @@
 <div class="example-wrapper">
     <h1>Hello {{ controller_name }}! ✅</h1>
 
-<ul>
-    {% for product in products %}
-        <li>
-            {{product.name}}
-            <a href="{{path('app_web_basket_add_product', {product:product.id, qty:1})}}">+ add</a>
-        </li>
+
+    {% for stage in orderStages %}
+        {% include './web/order/stages/' ~ stage.getTemplate() %}
+        <hr>
     {% endfor %}
-</ul>
+
 
 </div>
 {% endblock %}

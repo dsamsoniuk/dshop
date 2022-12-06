@@ -192,4 +192,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    /**
+     * @return Collection<int, Address>
+     */
+    public function getDeliveryAddress(): Collection {
+        return $this->addresses->filter(function(Address $address){
+            return !$address->getIsInvoice();
+        });
+    }
 }

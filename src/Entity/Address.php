@@ -31,6 +31,9 @@ class Address
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column]
+    private ?bool $isInvoice = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +83,18 @@ class Address
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getIsInvoice(): ?bool
+    {
+        return $this->isInvoice;
+    }
+
+    public function setIsInvoice(bool $isInvoice): self
+    {
+        $this->isInvoice = $isInvoice;
 
         return $this;
     }

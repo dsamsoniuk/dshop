@@ -1,0 +1,4 @@
+addressss {% if stage.isComplite() %}complite{% else %}not complite{% endif %}
+{{form_start(stage.getData()['form'])}}
+<button type="submit">zapisz</button>
+{{form_end(stage.getData()['form'])}}
