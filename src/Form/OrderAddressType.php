@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Regex;
 
-class AddressType extends AbstractType
+class OrderAddressType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -21,7 +21,7 @@ class AddressType extends AbstractType
                 'constraints' => [
                     new Regex('/[0-9]{2}\-[0-9]{3}/')
                 ]
-            ])
+            ])            
             ->add('street')
             ->add('user', EntityType::class, [
                 'class' => User::class,

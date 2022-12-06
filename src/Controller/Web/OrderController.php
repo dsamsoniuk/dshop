@@ -4,12 +4,10 @@ namespace App\Controller\Web;
 
 use App\Dto\OrderDto;
 use App\Dto\Transformer\OrderDtoTransformer;
-use App\Entity\Order;
 use App\Event\CreateOrderEvent;
 use App\Order\OrderBuilder;
 use App\Service\BasketService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,10 +61,15 @@ class OrderController extends AbstractController
 
                 $event = new CreateOrderEvent($newOrder);
                 $dispatcher->dispatch($event);
-                // return $this->redirectToRoute('app_user');
+                return $this->redirectToRoute('app_user');
+
             } else {
-                // $errorsString = (string) $errors;
-                $this->addFlash('danger', 'Order has errors');
+                foreach ($errors as $error) {
+                    $this->addFlash('danger', $error->getPropertyPath(). ' ' . $error->getMessage());
+                    // $this->addFlash('danger', 'Order has error, contact with administration of this page.');
+                    // TODO: logger save
+                }
+
             }
 
             // return $this->redirectToRoute('app_user');

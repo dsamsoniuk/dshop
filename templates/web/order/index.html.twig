@@ -9,11 +9,11 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Order</h1>
 
 
     {% for stage in order_stages %}
-            {% if stage.isComplite() %}:) stage complite{% else %}stage not complite{% endif %}
+            {% if stage.isComplite() %}:) ✅{% else %}stage not complite{% endif %}
 
         {% include './web/order/stages/' ~ stage.getTemplate() %}
         <hr>

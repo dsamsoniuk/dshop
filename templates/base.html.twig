@@ -25,6 +25,13 @@
         </style>
     </head>
     <body>
+    {% for type, msgs in app.flashes %}
+        {% for message in msgs %}
+            Message: {{type}} - {{ message }}
+            <br>
+        {% endfor %}
+    {% endfor %}
+    <br>
 
     <div class="w-100 d-block" style="height: 100px;">
         <ul class="d-block float-left">

@@ -4,14 +4,12 @@ namespace App\Order\Stage;
 
 use App\Dto\OrderDto;
 use App\Entity\Address;
-use App\Entity\Order;
 use App\Entity\User;
-use App\Form\AddressType;
+use App\Form\OrderAddressType;
 use App\Order\StageInterface;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -44,6 +42,8 @@ class AddressStage implements StageInterface
     public function setComplite(OrderDto $order): void {
         if ($order->getAddressDelivery()) {
             $this->complite = true;
+        } else {
+            $this->complite = false;
         }
     }
 
@@ -69,13 +69,15 @@ class AddressStage implements StageInterface
 
     private function getDeliveryAddressForm(Request $request, Address $address, OrderDto $order){
 
-        $form = $this->formFactory->create(AddressType::class, $address);
+        $form = $this->formFactory->create(OrderAddressType::class, $address);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $this->em->persist($address, true);
             $this->em->flush();
             $order->setAddressDelivery($address->getId());
+        } else if ($form->isSubmitted()) {
+            $order->setAddressDelivery(null);
         }
 
         $this->data['form'] = $form->createView();

@@ -3,17 +3,10 @@
 namespace App\Order\Stage;
 
 use App\Dto\OrderDto;
-use App\Entity\Address;
-use App\Entity\Payment;
-use App\Entity\User;
-use App\Form\AddressType;
 use App\Form\OrderPaymentType;
-use App\Form\PaymentType;
 use App\Order\StageInterface;
-use App\Repository\AddressRepository;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,6 +38,8 @@ class PaymentStage implements StageInterface
     public function setComplite(OrderDto $order): void {
         if ($order->getPayment()) {
             $this->complite = true;
+        } else {
+            $this->complite = false;
         }
     }
 

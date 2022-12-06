@@ -66,6 +66,6 @@ class Product
 
     public function getPriceGross(): ?float
     {
-        return $this->price_net + 2;
+        return $this->price_net * ( 1+ ($this->tax/100) );
     }
 }

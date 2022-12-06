@@ -1,5 +1,5 @@
 <h1>payment stage</h1><br>
 
-{{form_start(stage.getData()['form'])}}
+{{form_start(stage.getData()['form'], {'action': path('app_order')})}}
 <button type="submit">zapisz</button>
 {{form_end(stage.getData()['form'])}}
