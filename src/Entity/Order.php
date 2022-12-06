@@ -22,6 +22,10 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?Address $deliveryAddress = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Payment $payment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,6 +51,18 @@ class Order
     public function setDeliveryAddress(Address $deliveryAddress): self
     {
         $this->deliveryAddress = $deliveryAddress;
+
+        return $this;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
+    }
+
+    public function setPayment(Payment $payment): self
+    {
+        $this->payment = $payment;
 
         return $this;
     }

@@ -5,10 +5,13 @@ namespace App\Controller\Web;
 use App\Dto\OrderDto;
 use App\Dto\Transformer\OrderDtoTransformer;
 use App\Entity\Order;
+use App\Event\CreateOrderEvent;
 use App\Order\OrderBuilder;
 use App\Service\BasketService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -25,7 +28,8 @@ class OrderController extends AbstractController
         EntityManagerInterface $em,
         OrderBuilder $orderBuilder, 
         BasketService $basketService,
-        OrderDtoTransformer $orderDtoTransformer
+        OrderDtoTransformer $orderDtoTransformer,
+        EventDispatcherInterface $dispatcher
         ): Response
     {
 
@@ -45,18 +49,26 @@ class OrderController extends AbstractController
 
         $session->set('order', $order);
 
-        if ($orderBuilder->isOrderComplite()) {
+        if ($orderBuilder->isOrderComplite() && $request->query->getBoolean('create_order')) {
+
             $newOrder   = $orderDtoTransformer->transformToObject($order);
             $errors     = $validator->validate($newOrder);
 
-            if (empty($errors)) {
+            if (count($errors) == 0) {
+                $basket = $newOrder->getBasket();
+                $basket->setActive(false);
                 $em->persist($newOrder);
                 $em->flush();
-                // moze dispatch ???
+                $session->set('order', null);
+
+                $event = new CreateOrderEvent($newOrder);
+                $dispatcher->dispatch($event);
                 // return $this->redirectToRoute('app_user');
+            } else {
+                // $errorsString = (string) $errors;
+                $this->addFlash('danger', 'Order has errors');
             }
-            // $errorsString = (string) $errors;
-            $this->addFlash('danger', 'Order has errors');
+
             // return $this->redirectToRoute('app_user');
         }
 
@@ -67,7 +79,8 @@ class OrderController extends AbstractController
 
         return $this->render('web/order/index.html.twig', [
             'controller_name' => 'OrderController',
-            'orderStages' => $orderStages
+            'order_stages' => $orderStages,
+            'order_complite' => $orderBuilder->isOrderComplite()
         ]);
     }
     public function orderAddress(){

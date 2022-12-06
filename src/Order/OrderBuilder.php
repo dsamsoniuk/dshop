@@ -5,6 +5,7 @@ namespace App\Order;
 use App\Dto\OrderDto;
 use App\Entity\Order;
 use App\Order\Stage\AddressStage;
+use App\Order\Stage\PaymentStage;
 use App\Service\BasketService;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,15 @@ class OrderBuilder
 
     public function __construct(
         private AddressStage $addressStage,
+        private PaymentStage $paymentStage,
         )
     {
         $this->build();
+    }
+
+    private function build(): void{
+        $this->addStage($this->addressStage);
+        $this->addStage($this->paymentStage);
     }
 
     public function getStages(): array{
@@ -39,10 +46,6 @@ class OrderBuilder
     }
     public function isOrderComplite(): bool {
         return $this->order_complite;
-    }
-
-    private function build(): void{
-        $this->addStage($this->addressStage);
     }
 
     private function addStage(StageInterface $stage): self{

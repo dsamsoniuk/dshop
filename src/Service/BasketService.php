@@ -3,11 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Basket;
-use App\Entity\Product;
 use App\Repository\BasketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class BasketService
 {
@@ -22,6 +20,7 @@ class BasketService
         $user = $this->security->getUser();
         $basket = $this->basketRepository->findOneBy([
             'user' => $user,
+            'active' => true
         ]);
 
         if (!$basket) {

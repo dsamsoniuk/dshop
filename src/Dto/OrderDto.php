@@ -6,7 +6,7 @@ class OrderDto
 {
     private ?int $basket = null;
     private ?int $addressDelivery = null;
-    private ?int $supplier = null;
+    private ?int $payment = null;
 
     /**
      * Get the value of basket
@@ -44,6 +44,26 @@ class OrderDto
     public function setAddressDelivery($addressDelivery)
     {
         $this->addressDelivery = $addressDelivery;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of payment
+     */ 
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    /**
+     * Set the value of payment
+     *
+     * @return  self
+     */ 
+    public function setPayment($payment)
+    {
+        $this->payment = $payment;
 
         return $this;
     }

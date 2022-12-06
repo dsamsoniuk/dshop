@@ -12,11 +12,18 @@
     <h1>Hello {{ controller_name }}! ✅</h1>
 
 
-    {% for stage in orderStages %}
+    {% for stage in order_stages %}
+            {% if stage.isComplite() %}:) stage complite{% else %}stage not complite{% endif %}
+
         {% include './web/order/stages/' ~ stage.getTemplate() %}
         <hr>
     {% endfor %}
 
+    {% if order_complite %}
+        <a href="{{path('app_order', {'create_order':true})}}">CREATE ORDER</a>
+    {% else %}
+        order not complite
+    {% endif %}
 
 </div>
 {% endblock %}
