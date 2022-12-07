@@ -22,10 +22,10 @@ class BasketController extends AbstractController
         )
     {
     }
+    
     #[Route('basket/', name: 'app_web_basket')]
     public function index(): Response
     {
-
         $basket = $this->basketService->getBasket();
 
         return $this->render('web/basket/index.html.twig', [

@@ -39,16 +39,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Basket::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Basket::class, cascade: ['persist'])]
     private Collection $baskets;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist'])]
     private Collection $addresses;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, cascade: ['persist'])]
+    private Collection $notifications;
 
     public function __construct()
     {
         $this->baskets = new ArrayCollection();
         $this->addresses = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,5 +203,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->addresses->filter(function(Address $address){
             return !$address->getIsInvoice();
         });
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

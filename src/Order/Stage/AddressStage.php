@@ -55,7 +55,7 @@ class AddressStage implements StageInterface
 
         if ($order->getAddressDelivery()) {
             $deliveryAddr = $this->addressRepository->find($order->getAddressDelivery());
-        } else if (!empty($deliveryAddresses)) {
+        } else if (count($deliveryAddresses) > 0) {
             $deliveryAddr = $deliveryAddresses[0];
         } else {
             $deliveryAddr = new Address();

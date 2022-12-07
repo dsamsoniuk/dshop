@@ -19,16 +19,12 @@ class BasketDetails
     #[ORM\JoinColumn(nullable: false)]
     private ?Basket $basket = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
-
     #[ORM\Column]
     private ?int $quantity = 0;
 
-    public function __construct()
-    {
-    }
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
 
     public function getId(): ?int
     {
@@ -47,18 +43,6 @@ class BasketDetails
         return $this;
     }
 
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(Product $product): self
-    {
-        $this->product = $product;
-
-        return $this;
-    }
-
     public function getQuantity(): ?int
     {
         return $this->quantity;
@@ -67,6 +51,18 @@ class BasketDetails
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }

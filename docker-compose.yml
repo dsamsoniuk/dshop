@@ -17,6 +17,21 @@ services:
       - '3306:3306'
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
+  rabbitmq:
+      image: rabbitmq:3-management-alpine
+      container_name: 'rabbitmq'
+      ports:
+          - 5672:5672
+          - 15672:15672
+      # volumes:
+      #     - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      #     - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      networks:
+          - rabbitmq_go_net
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
 ###< doctrine/doctrine-bundle ###
 
 volumes:

@@ -5,6 +5,7 @@ namespace App\Controller\Web;
 use App\Dto\OrderDto;
 use App\Dto\Transformer\OrderDtoTransformer;
 use App\Event\CreateOrderEvent;
+use App\Message\OrderNotification;
 use App\Order\OrderBuilder;
 use App\Service\BasketService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class OrderController extends AbstractController
 {
@@ -27,7 +29,8 @@ class OrderController extends AbstractController
         OrderBuilder $orderBuilder, 
         BasketService $basketService,
         OrderDtoTransformer $orderDtoTransformer,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        MessageBusInterface $messager
         ): Response
     {
 
@@ -59,9 +62,12 @@ class OrderController extends AbstractController
                 $em->flush();
                 $session->set('order', null);
 
-                $event = new CreateOrderEvent($newOrder);
-                $dispatcher->dispatch($event);
-                return $this->redirectToRoute('app_user');
+                // $event = new CreateOrderEvent($newOrder);
+                // $dispatcher->dispatch($event);
+                $messager->dispatch(new OrderNotification($newOrder->getId()));
+                $this->addFlash('success', 'Order added to queue.');
+
+                return $this->redirectToRoute('app_main');
 
             } else {
                 foreach ($errors as $error) {
