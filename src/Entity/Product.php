@@ -19,7 +19,7 @@ class Product
     #[ORM\Column]
     private ?float $price_net = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Tax $tax = null;
 
