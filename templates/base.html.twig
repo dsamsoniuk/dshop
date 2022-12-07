@@ -12,17 +12,7 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
-        <style>
-            .float-left {
-                float: left;
-            }
-            .d-block {
-                display: block;
-            }
-            .w-100 {
-                width:100%;
-            }
-        </style>
+
     </head>
     <body>
     {% for type, msgs in app.flashes %}
@@ -32,30 +22,39 @@
         {% endfor %}
     {% endfor %}
     <br>
+<di class="container">
+    <div class="row">
 
-    <div class="w-100 d-block" style="height: 100px;">
-        <ul class="d-block float-left">
-            <li>menu</li>
-            <li><a href="{{path('app_main')}}">index</a></li>
-            <li><a href="{{path('app_login')}}">login</a></li>
-            <li><a href="{{path('app_register')}}">register</a></li>
-            <li><a href="{{path('app_web_basket')}}">basket</a></li>
-            <li><a href="{{path('app_web_product')}}">shop</a></li>
-        </ul>
-    
-        <ul class="d-block float-left">
-            <li>admin</li>
-            <li><a href="{{path('app_product_index')}}">products</a></li>
-            <li><a href="{{path('app_tax_index')}}">tax</a></li>
-            <li><a href="{{path('app_address_index')}}">address</a></li>
-            <li><a href="{{path('app_payment_index')}}">paymants</a></li>
-        </ul>
+        <div class="col-sm-2" >
+            <div id="app">vue block</div>
+
+            <ul class="d-block float-left">
+                <li>menu</li>
+                <li><a href="{{path('app_main')}}">index</a></li>
+                <li><a href="{{path('app_login')}}">login</a></li>
+                <li><a href="{{path('app_register')}}">register</a></li>
+                <li><a href="{{path('app_web_basket')}}">basket</a></li>
+                <li><a href="{{path('app_web_product')}}">shop</a></li>
+            </ul>
+        
+            <ul class="d-block float-left">
+                <li>admin</li>
+                <li><a href="{{path('app_product_index')}}">products</a></li>
+                <li><a href="{{path('app_tax_index')}}">tax</a></li>
+                <li><a href="{{path('app_address_index')}}">address</a></li>
+                <li><a href="{{path('app_payment_index')}}">paymants</a></li>
+            </ul>
+        </div>
+
+        <div class="col-sm-10">
+            <div class="container">
+                {% block body %}{% endblock %}
+
+            </div>
+        </div>
 
     </div>
-    <div class="d-block w-100">
+</di>
 
-        {% block body %}{% endblock %}
-
-    </div>
     </body>
 </html>
