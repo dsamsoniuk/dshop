@@ -29,4 +29,7 @@ docker compose up # will install mysql, rabbitMQ
 
 php bin/console doctrine:migrations:migrate
 
+# rabbitMQ
+php bin/console messenger:consume async
+
 ```
