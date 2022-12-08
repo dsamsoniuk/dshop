@@ -5,18 +5,27 @@ services:
   database:
     image: 'mysql:8.0'
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: dshop
       MYSQL_DATABASE: dshop
       MYSQL_USER: dshop
       MYSQL_PASSWORD: dshop
     ports:
-      # To allow the host machine to access the ports below, modify the lines below.
-      # For example, to allow the host to connect to port 3306 on the container, you would change
-      # "3306" to "3306:3306". Where the first port is exposed to the host and the second is the container port.
-      # See https://docs.docker.com/compose/compose-file/compose-file-v3/#ports for more information.
       - '3306:3306'
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
+    volumes:
+    - "./database:/docker-entrypoint-initdb.d"
+  database_test:
+    image: 'mysql:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: dshop
+      MYSQL_DATABASE: dshop_test
+      MYSQL_USER: dshop
+      MYSQL_PASSWORD: dshop
+    ports:
+      - '3307:3306'
+    volumes:
+    - "./database:/docker-entrypoint-initdb.d"
   rabbitmq:
       image: rabbitmq:3-management-alpine
       container_name: 'rabbitmq'
@@ -36,5 +45,7 @@ networks:
 
 volumes:
 ###> doctrine/doctrine-bundle ###
-  db-data:
+  # db-data:
+  database:
+    # driver: local
 ###< doctrine/doctrine-bundle ###

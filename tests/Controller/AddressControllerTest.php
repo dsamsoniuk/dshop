@@ -3,6 +3,7 @@
 namespace App\Test\Controller;
 
 use App\Entity\Address;
+use App\Entity\User;
 use App\Repository\AddressRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -17,6 +18,7 @@ class AddressControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->repository = static::getContainer()->get('doctrine')->getRepository(Address::class);
+        $this->userRepository = static::getContainer()->get('doctrine')->getRepository(User::class);
 
         foreach ($this->repository->findAll() as $object) {
             $this->repository->remove($object, true);
@@ -38,16 +40,16 @@ class AddressControllerTest extends WebTestCase
     {
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
 
         $this->client->submitForm('Save', [
             'address[city]' => 'Testing',
-            'address[postcode]' => 'Testing',
+            'address[postcode]' => '11-111',
             'address[street]' => 'Testing',
-            'address[user]' => 'Testing',
+            'address[user]' => '1',
         ]);
 
         self::assertResponseRedirects('/address/');
@@ -57,12 +59,13 @@ class AddressControllerTest extends WebTestCase
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
+        $user = $this->userRepository->find(1);
         $fixture = new Address();
-        $fixture->setCity('My Title');
-        $fixture->setPostcode('My Title');
-        $fixture->setStreet('My Title');
-        $fixture->setUser('My Title');
+        $fixture->setCity('My city');
+        $fixture->setPostcode('11-111');
+        $fixture->setStreet('My streen');
+        $fixture->setUser($user);
 
         $this->repository->save($fixture, true);
 
@@ -76,12 +79,14 @@ class AddressControllerTest extends WebTestCase
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
+        $user = $this->userRepository->find(1);
+
         $fixture = new Address();
         $fixture->setCity('My Title');
-        $fixture->setPostcode('My Title');
+        $fixture->setPostcode('11-111');
         $fixture->setStreet('My Title');
-        $fixture->setUser('My Title');
+        $fixture->setUser($user);
 
         $this->repository->save($fixture, true);
 
@@ -89,9 +94,9 @@ class AddressControllerTest extends WebTestCase
 
         $this->client->submitForm('Update', [
             'address[city]' => 'Something New',
-            'address[postcode]' => 'Something New',
+            'address[postcode]' => '22-222',
             'address[street]' => 'Something New',
-            'address[user]' => 'Something New',
+            'address[user]' => '1',
         ]);
 
         self::assertResponseRedirects('/address/');
@@ -99,22 +104,23 @@ class AddressControllerTest extends WebTestCase
         $fixture = $this->repository->findAll();
 
         self::assertSame('Something New', $fixture[0]->getCity());
-        self::assertSame('Something New', $fixture[0]->getPostcode());
+        self::assertSame('22-222', $fixture[0]->getPostcode());
         self::assertSame('Something New', $fixture[0]->getStreet());
-        self::assertSame('Something New', $fixture[0]->getUser());
+        self::assertSame($user->getId(), $fixture[0]->getUser()->getId());
     }
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
+        $user = $this->userRepository->find(1);
 
         $originalNumObjectsInRepository = count($this->repository->findAll());
 
         $fixture = new Address();
         $fixture->setCity('My Title');
-        $fixture->setPostcode('My Title');
+        $fixture->setPostcode('11-111``');
         $fixture->setStreet('My Title');
-        $fixture->setUser('My Title');
+        $fixture->setUser($user);
 
         $this->repository->save($fixture, true);
 

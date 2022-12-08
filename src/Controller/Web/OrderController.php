@@ -62,11 +62,10 @@ class OrderController extends AbstractController
                 $em->flush();
                 $session->set('order', null);
 
-                // $event = new CreateOrderEvent($newOrder);
-                // $dispatcher->dispatch($event);
                 $messager->dispatch(new OrderNotification($newOrder->getId()));
                 $this->addFlash('success', 'Order added to queue.');
-
+                //// $event = new CreateOrderEvent($newOrder);
+                //// $dispatcher->dispatch($event);
                 return $this->redirectToRoute('app_main');
 
             } else {
